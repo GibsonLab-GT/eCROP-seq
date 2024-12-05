@@ -30,10 +30,10 @@ data <- subset(x = data, idents = "TRUE")
 test=data.frame(positive= EXPR1==0 & EXPR2==0)
 data <- SetIdent(data, value = test$positive)
 
-# and separate in group with one of those gRNA
+# and separate in group without any gRNA targeting target gene
 data_sub_pos <- subset(x = data, idents = "TRUE")
 
-# or without any of them
+# or with one of the gRNA
 data_sub_neg <- subset(x = data, idents = "FALSE")
 
 
@@ -48,17 +48,23 @@ for (i in 1:dim(to_test)[1]) {{
     TARGET=to_test$GENE[i]
     empty='NA'
     
-######grna 1 to cells without gRNA 1###########################
+###### grna 1 to cells without gRNA 1 in subsetted data ######
+## create dataframes for target gene expression and gRNA presence in cells with gRNA targeting target gene 
 EXPR = GetAssayData(object=data_sub_neg, assay="RNA",slot="data")[GENE,]
 EXPR_target = GetAssayData(object=data_sub_neg, assay="RNA",slot="data")[TARGET,]
 EXPR_df2=data.frame(EXPR, EXPR_target)
 rm(EXPR,EXPR_target)
 
+## create dataframes for target gene expression in cells without any gRNA targeting target gene
 EXPR_target_NULL = GetAssayData(object=data_sub_pos, assay="RNA",slot="data")[TARGET,]
 EXPR_target_NULL=data.frame(EXPR_target_NULL)
 EXPR_target_NULL <- EXPR_target_NULL %>% rename('EXPR_target'='EXPR_target_NULL')
+
+## extract target gene expression in all cells (i.e. not further subsetted for expression of target gene)
 df_nogRNA <- EXPR_target_NULL %>%select(EXPR_target)
 df_gRNA <- EXPR_df2 %>%filter(EXPR != 0)%>%select(EXPR_target)
+
+## Subset further for cells that express target gene and extract target gene expression
 test <- df_gRNA %>%filter(EXPR_target > 0)
 no_g_test <- df_nogRNA %>%filter(EXPR_target > 0)
 
@@ -70,7 +76,7 @@ b<- nrow(test)
 TEST='T'
 info[nrow(info) + 1,] = c(GENE,gRNA,STATUS,CHR,TARGET,a,b,p1,p2,TEST)
 
-##kns
+##ks
 TEST='KS'
 p1 <- ks.test(df_nogRNA$EXPR_target, df_gRNA$EXPR_target, alterntive= c("two.sided"))$p.value
 p2 <- ks.test(no_g_test$EXPR_target, test$EXPR_target, alterntive= c("two.sided"))$p.value
