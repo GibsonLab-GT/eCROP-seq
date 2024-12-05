@@ -55,11 +55,13 @@ chr6:143507791-1, chr6:143507791-2, chr6:143507791,  Rare, FUCA2
 Thus, this script takes in a file that has a column containing the variant targeted by gRNA 1 in Seurat Object titled ‘SNP_1’, the variant targeted by gRNA 2 titled ‘SNP_2’, the general SNP name targeted with either guide titled ‘SNP’, the status of each variant (i.e. negative control, rare to be tested, positive control) titled ‘STATUS’, and the gene targeted titled ‘GENE’. As well as a quality-controlled Seurat object titled ‘data’. 
 As above, proximal and random gene analyses are conducted with this script, instead read in a file with SNP_1, SNP_2, SNP, status, and proximal or random, respectively, instead of target gene.
 Additional information not essential to this script can be included by simply adding ‘New  info col’ when initializing the info data frame and later when adding a row to the info data frame. It is recommended to do so for proximal and random gene analysis, by adding an additional column for the original target gene, even though the expression change of the proximal/random gene is the one being tested. Unless otherwise specified, the generated csv file will have the following information: SNP_1, SNP_2, SNP, status, target gene, number of cells with gRNA, number of cells with gRNA and expressing target, p-value for cells with gRNA, p-value when subsetting further for cells with gRNA and expressing target, hypothesis test. Note this script performs 5 different groupings for hypothesis tests:
+
   A) cells with gRNA 1 to those without gRNA 1
-  B) cells with gRNA 2 to those without gRNA 1
+  B) cells with gRNA 2 to those without gRNA 2
   C) cells with either gRNA 1 or 2 to those without either 
   D) cells with gRNA 1 to those without gRNA 1 or 2
   E) cells with gRNA 2 to those without gRNA 1 or 2
+  
 And performs a student’s t-test and KS test. As well as all of those comparisons for only cells expressing target gene and repeats.
 
 **After Output from Hypothesis Testing:**
