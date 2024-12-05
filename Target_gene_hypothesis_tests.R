@@ -7,9 +7,9 @@ library(Seurat)
 info <- data.frame('Gene','gRNA','STATUS','CHR','TARGET','cells.w.guide', 'cells.w.guide.and.target', 'p.value.all', 'p.value.test','Test')
 
 #filter file for target gene of interest
-setwd("Path to file with gRNA and gene information")
-to_test<-read.csv('Name of file.csv')
-to_test <- to_test %>% filter(GENE=='Gene of Interest')
+setwd("Path to file with gRNA and target gene information")
+to_test<-read.csv('Name of File.csv')
+to_test <- to_test %>% filter(GENE=='Target gene of interest')
 
 #specify all gRNA in pool
 GENE1= 'RSID_1'
