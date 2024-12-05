@@ -1,2 +1,2 @@
 # eCROP-seq
-Processing of eCROP-seq experiments
+Files to perform hypothesis testing of eCROP-seq experimental data in R.
