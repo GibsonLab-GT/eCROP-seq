@@ -1,7 +1,7 @@
 library(dplyr)
 library(Seurat)
 
-#read QC data in as data
+#read QC data from eCROPseq experiments in as data
 
 ##### PRE-PROCESSING #####
 info <- data.frame('Gene','gRNA','STATUS','CHR','TARGET','cells.w.guide', 'cells.w.guide.and.target', 'p.value.all', 'p.value.test','Test')
