@@ -6,10 +6,10 @@ library(Seurat)
 ##### PRE-PROCESSING #####
 info <- data.frame('Gene','gRNA','STATUS','CHR','TARGET','cells.w.guide', 'cells.w.guide.and.target', 'p.value.all', 'p.value.test','Test')
 
-#filter file for gene of interest
-setwd("C:/Users/green/GaTech Dropbox/Emily Greenwood/Sequencing runs 4-2024/Files to run")
-to_test<-read.csv('pool12_hyptest_file.csv')
-to_test <- to_test %>% filter(GENE=='FADS1')
+#filter file for target gene of interest
+setwd("Path to file with gRNA and gene information")
+to_test<-read.csv('Name of file.csv')
+to_test <- to_test %>% filter(GENE=='Gene of Interest')
 
 #specify all gRNA in pool
 GENE1= 'RSID_1'
@@ -76,7 +76,7 @@ p1 <- ks.test(df_nogRNA$EXPR_target, df_gRNA$EXPR_target, alterntive= c("two.sid
 p2 <- ks.test(no_g_test$EXPR_target, test$EXPR_target, alterntive= c("two.sided"))$p.value
 info[nrow(info) + 1,] = c(GENE,gRNA,STATUS,CHR,TARGET,a,b,p1,p2,TEST)
 
-#write.csv(info,'Change_name_of_file.csv')
+write.csv(info,'Change_name_of_file.csv')
 
 }, error=function(e){})
 }
