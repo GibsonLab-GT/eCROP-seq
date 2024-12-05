@@ -22,9 +22,10 @@ Additional information not essential to this script can be included by simply ad
 2) cells with gRNA 2 to those without gRNA 1
 3) cells with either gRNA 1 or 2 to those without either 
 4) cells with gRNA 1 to those without gRNA 1 or 2
+5) cells with gRNA 2 to those without gRNA 1 or 2
 And performs a student’s t-test and KS test. As well as all of those comparisons for only cells expressing target gene and repeats.
 
 ** Applies to all of the above outputs ** 
 4) Filter_for_sig_common_variants.R
-This script takes a combined data frame of all hypothesis test files generated from 1) 2) or 3). If across multiple files and all in one folder, there is a portion of the script that will combine all files for samples set (e.g. all genes from HL60 samples), then sort based on a p-value less than equal to 0.05 in 5 or more cells. This was the criteria for validation of common variant and rare variant experiments. For initial common variant experiments, the criteria was 0.005 in 5 or more cells. This can be tailored to the precise needs of differing experimental designs. Code filters columns with names of ‘X.p.value.all. , X.p.value.test. , X.cells.w.guide.and.target. , and X.cells.w.guide.’ which will be outputted in 1) or 2). 
+This script takes a combined data frame of all hypothesis test files generated from 1) 2) or 3). If across multiple files and all in one folder, there is a portion of the script that will combine all files for samples set (e.g. all genes from HL60 samples), then sort based on a p-value less than equal to 0.05 in 5 or more cells. This was the criteria for validation of common variant and rare variant experiments. For initial common variant experiments, the criteria was 0.005 in 5 or more cells. This can be tailored to the precise needs of differing experimental designs. Code filters columns with names of ‘X.p.value.all. , X.p.value.test. , X.cells.w.guide.and.target. , and X.cells.w.guide.’ which will be outputted in 1) 2) or 3). 
 
