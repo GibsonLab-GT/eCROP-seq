@@ -57,9 +57,13 @@ As above, proximal and random gene analyses are conducted with this script, inst
 Additional information not essential to this script can be included by simply adding ‘New  info col’ when initializing the info data frame and later when adding a row to the info data frame. It is recommended to do so for proximal and random gene analysis, by adding an additional column for the original target gene, even though the expression change of the proximal/random gene is the one being tested. Unless otherwise specified, the generated csv file will have the following information: SNP_1, SNP_2, SNP, status, target gene, number of cells with gRNA, number of cells with gRNA and expressing target, p-value for cells with gRNA, p-value when subsetting further for cells with gRNA and expressing target, hypothesis test. Note this script performs 5 different groupings for hypothesis tests:
 
   A) cells with gRNA 1 to those without gRNA 1
+  
   B) cells with gRNA 2 to those without gRNA 2
+  
   C) cells with either gRNA 1 or 2 to those without either 
+  
   D) cells with gRNA 1 to those without gRNA 1 or 2
+  
   E) cells with gRNA 2 to those without gRNA 1 or 2
   
 And performs a student’s t-test and KS test. As well as all of those comparisons for only cells expressing target gene and repeats.
