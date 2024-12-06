@@ -1,11 +1,11 @@
 # eCROP-seq
 
-Expression CROPseq is a process that uses CRISPR/cas9 to edit cells from a pool of gRNA and measure the impact on gene expression from scRNAseq. Guide RNA, corresponding to a unique SNP knockout, are detected as transcripts enabling us to differentiate which cell got which perturbation, and thus, which perturbation causes an effect. Published pilot experiments ([DOI: 10.1093/biomethods/bpaa008](https://pubmed.ncbi.nlm.nih.gov/32665975/) show this working well for two genes (PARK7 and CISD1). Here, we use screens with the function of rare and common variants (manuscript in submission). Uploaded files to perform hypothesis testing of eCROP-seq experimental data in R, Phyton, and Bash and are described below. Analyses report on work that was conducted by Emily Greenwood (Georgia Tech) and Mingming Cao (Rice University).
+Expression CROPseq is a process that uses CRISPR/cas9 to edit cells from a pool of gRNA and measure the impact on gene expression from scRNAseq. Guide RNA, corresponding to a unique SNP knockout, are detected as transcripts enabling us to differentiate which cell got which perturbation, and thus, which perturbation causes an effect. Published pilot experiments ([DOI: 10.1093/biomethods/bpaa008](https://pubmed.ncbi.nlm.nih.gov/32665975/)) show this working well for two genes (PARK7 and CISD1). Here, we use screens with the function of rare and common variants (manuscript in submission). Uploaded files to perform hypothesis testing of eCROP-seq experimental data in R, Phyton, and Bash and are described below. Analyses report on work that was conducted by Emily Greenwood (Georgia Tech) and Mingming Cao (Rice University).
 
 **Pre-processing Common Variant:**
 
 Genes associated with Inflammatory Bowel Disease (IBD) were taken from https://www.opentargets.org/.
-Expression QTL for these genes were isolated via all-but-one conditional analysis by Maggie Brown (Georgia Tech) and described in previous publication. Please see https://github.com/GibsonLab-GT/All-but-One conditional analysis and additional publication DOI: 10.1093/genetics/iyac162. 
+Expression QTL for these genes were isolated via all-but-one conditional analysis by Maggie Brown (Georgia Tech) and described in previous publication. Please see https://github.com/GibsonLab-GT/All-but-One conditional analysis and additional publication [DOI: 10.1093/genetics/iyac162](https://pubmed.ncbi.nlm.nih.gov/36321965/). 
 
 Variants in eQTL were then selected based on significance, linkage disequilibrium with lead variants, and overlap with ATACseq peaks. Then they were brought forth to gRNA design and were targeted by one unique gRNA.
 
@@ -15,7 +15,7 @@ Rare variants that were predicted to be functional by Watershed (Ferraro et al. 
 
 **gRNA Design:**
 
-This code has been modified from original work created by author's (Yidan Pan, Ruoyu Tian and Ciaran Lee) in initial eCROP-seq analysis (DOI: 10.1093/biomethods/bpaa008). Modifications were made to fit our study design. 
+This code has been modified from original work created by author's (Yidan Pan, Ruoyu Tian and Ciaran Lee) in initial eCROP-seq analysis ([DOI: 10.1093/biomethods/bpaa008](https://pubmed.ncbi.nlm.nih.gov/32665975/)). Modifications were made to fit our study design. 
 
 1) gRNA_assessment_hg19.py and gRNA_assessment_hg38.py
 
@@ -26,7 +26,7 @@ If positions in SNP.csv file are in GrCH37/Hg19 human reference genome format, u
 
 **Supplementing reference genome**
 
-Fasta and GTF so for each gRNA sequence as a chromosome were created following protocol laid out in Datlinger et al. DOI: https://doi.org/10.1038/nmeth.4177. To create reference genomes, we followed https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr by first copying the Human reference genome's (https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz) fasta and GTF files into a new folder. Then concatenated the gRNA fasta and GTF file to the Hg38 fasta and GTF file, respectively. 
+Fasta and GTF so for each gRNA sequence as a chromosome were created following protocol laid out in Datlinger et al. [DOI: https://doi.org/10.1038/nmeth.4177](https://www.nature.com/articles/nmeth.4177). To create reference genomes, we followed https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr by first copying the Human reference genome's (https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz) fasta and GTF files into a new folder. Then concatenated the gRNA fasta and GTF file to the Hg38 fasta and GTF file, respectively. 
 For samples processed with 10x genomics, we then ran cell ranger mkref to create the reference. For samples processed with Fluent Biosciences, we ran Star v.2.7.11a with the following command:
 	
  	./STAR --runMode genomeGenerate --genomeDir ~/path/for/file --runThreadN 4 --genomeFastaFiles ~/path/to/fasta --sjdbGTFfile ~/path/to/gtf --sjdbOverhang 69 --runThreadN 7 --genomeSAsparseD 3.
@@ -58,9 +58,10 @@ This file takes the same information as 2) (i.e. QC Seurat object and file with 
 
 4) Target_gene_hypothesis_tests_rare_variant.R
 This script is slightly modified from above due to rare variants being targeted by two gRNA, named SNP_1 for cells with gRNA 1 and SNP_2 for cells with gRNA 2. Example of the file in csv format:
-SNP_1, SNP_2, SNP,  STATUS, GENE
-chr6:143501293-1, NA, chr6:143501293,  NegativeControl, FUCA2
-chr6:143507791-1, chr6:143507791-2, chr6:143507791,  Rare, FUCA2
+
+	SNP_1, SNP_2, SNP,  STATUS, GENE
+	chr6:143501293-1, NA, chr6:143501293,  NegativeControl, FUCA2
+	chr6:143507791-1, chr6:143507791-2, chr6:143507791,  Rare, FUCA2
 
 Thus, this script takes in a file that has a column containing the variant targeted by gRNA 1 in Seurat Object titled ‘SNP_1’, the variant targeted by gRNA 2 titled ‘SNP_2’, the general SNP name targeted with either guide titled ‘SNP’, the status of each variant (i.e. negative control, rare to be tested, positive control) titled ‘STATUS’, and the gene targeted titled ‘GENE’. As well as a quality-controlled Seurat object titled ‘data’. 
 As above, proximal and random gene analyses are conducted with this script, instead read in a file with SNP_1, SNP_2, SNP, status, and proximal or random, respectively, instead of target gene.
