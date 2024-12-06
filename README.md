@@ -52,7 +52,7 @@ Standard quality control was followed as described in https://satijalab.org/seur
 	qc.nFeature_RNA  <- isOutlier(data$nFeature_RNA, log=TRUE, type="both",nmads = 2)
 	attr(qc.nFeature_RNA, "thresholds")
 	qc.percent.mt <- isOutlier(data$percent.mt,  type="higher",nmads = 2)
-	attr(qc.percent.m, "thresholds")
+	attr(qc.percent.mt, "thresholds")
  
 ----------------------
 **Hypothesis Testing**
