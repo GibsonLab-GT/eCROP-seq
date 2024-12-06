@@ -18,6 +18,7 @@ Rare variants that were predicted to be functional by Watershed (Ferraro et al. 
 This code has been modified from original work created by author's (Yidan Pan, Ruoyu Tian and Ciaran Lee) in initial eCROP-seq analysis (DOI: 10.1093/biomethods/bpaa008). Modifications were made to fit our study design. 
 
 1) gRNA_assessment_hg19.py and gRNA_assessment_hg38.py
+
 File takes in a data frame titled SNP.csv with columns ‘RSID Chr’, ‘RSID BP’, and ‘Focal_RSID’ and outputs gRNA with a cut site within 10bp and GC content between 20-80. Output file with all information,  is labeled ‘SNP_list_test_1003.txt’ and will contain the columns: Focal_RSID, gRNA sequence, SNP-gRNA distance, Strand.
 If positions in SNP.csv file are in GrCH37/Hg19 human reference genome format, use gRNA_assessment_hg19.py. If positions are in GrCH38/Hg38 human reference genome format, use gRNA_assessment_hg38.py. Run script with Python v 2.7.18 with the following command: python gRNA_assessment_hg19.py -i SNP.csv. 
 
