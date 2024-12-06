@@ -72,7 +72,7 @@ def search_gRNA(id_,seq,strand):#find gRNAs
 
 ######################################################################################################
 #0 get file info
-SNP_file="SNP1.csv"
+SNP_file="SNP.csv"
 
 #1 Get the list of SNPs
 SNP_list=[]
@@ -152,12 +152,6 @@ for i in range(0,len(SNP_list1)):
         else:
             ID_list.append(SNP_list1['ID'].iloc[i])
             output_SNP=output_SNP+result_filter
-            outfile = open('SNP_test.txt','a')
-            for j in range(0,len(result_filter)):
-                for k in range(0,len(result_filter[j])):
-                    outfile.write(str(result_filter[j][k])+"	")
-                    outfile.write("\n")
-            outfile.close( )
 
 print "SNP_list"
 print SNP_list1
@@ -168,12 +162,9 @@ print Cant_find_SNP
 print "output_SNP is "
 print output_SNP
 
-print "output_SNP_mm"
-print output_SNP_mm
-
 #####################################################################################################
 ######outputfile
-outfile = open("SNP_list_test_1003.txt", "w");
+outfile = open("hg19_gRNA_to_process.txt", "w");
 outfile.write("Focal_RSID	gRNA	SNP-gRNA Distance	Strand"+"\n");
 for i in range(0,len(output_SNP)):
     for j in range(0,len(output_SNP[i])):
