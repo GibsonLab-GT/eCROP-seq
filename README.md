@@ -60,7 +60,9 @@ This file takes the same information as 2) (i.e. QC Seurat object and file with 
 This script is slightly modified from above due to rare variants being targeted by two gRNA, named SNP_1 for cells with gRNA 1 and SNP_2 for cells with gRNA 2. Example of the file in csv format:
 
 	SNP_1, SNP_2, SNP,  STATUS, GENE
+
 	chr6:143501293-1, NA, chr6:143501293,  NegativeControl, FUCA2
+
 	chr6:143507791-1, chr6:143507791-2, chr6:143507791,  Rare, FUCA2
 
 Thus, this script takes in a file that has a column containing the variant targeted by gRNA 1 in Seurat Object titled ‘SNP_1’, the variant targeted by gRNA 2 titled ‘SNP_2’, the general SNP name targeted with either guide titled ‘SNP’, the status of each variant (i.e. negative control, rare to be tested, positive control) titled ‘STATUS’, and the gene targeted titled ‘GENE’. As well as a quality-controlled Seurat object titled ‘data’. 
