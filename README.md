@@ -22,8 +22,6 @@ This code has been modified from original work created by author's (Yidan Pan, R
 File takes in a data frame titled SNP.csv with columns ‘RSID Chr’, ‘RSID BP’, and ‘Focal_RSID’ and outputs gRNA with a cut site within 10bp and GC content between 20-80. Output file with all information,  is labeled ‘gRNA_to_process.txt’ and will contain the columns: Focal_RSID, gRNA sequence, SNP-gRNA distance, Strand. Another file label 'no_gRNA_SNP.csv' will contain SNP names without a gRNA fitting specified criteria. 
 If positions in SNP.csv file are in GrCH37/Hg19 human reference genome format, use gRNA_assessment_hg19.py. If positions are in GrCH38/Hg38 human reference genome format, use gRNA_assessment_hg38.py. Run script with Python v 2.7.18 with the following command: python gRNA_assessment_hg19.py -i SNP.csv. 
 
-2) Use bash commands listed in 'Formating_gRNA_to_process_file.md' to manipulate gRNA_to_process.txt into the right format. After step 5 rename columns OligoName and Sequence. 'gRNA_Modification.py' will take in this file as an input and output a 73bp oligonucleotide sequence for ordering. 
-
 **Supplementing reference genome**
 
 Fasta and GTF so for each gRNA sequence as a chromosome were created following protocol laid out in Datlinger et al. DOI: https://doi.org/10.1038/nmeth.4177. To create reference genomes, we followed https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/tutorial_mr by first copying the Human reference genome's (https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-GRCh38-2020-A.tar.gz) fasta and GTF files into a new folder. Then concatenated the gRNA fasta and GTF file to the Hg38 fasta and GTF file, respectively. 
