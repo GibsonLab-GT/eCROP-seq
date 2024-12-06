@@ -47,8 +47,13 @@ With Fluent Biosciences samples, reads were aligned to supplemented reference ge
 
 **Quality Control in Seurat**
 
-Standard quality control was followed as described in https://satijalab.org/seurat/articles/pbmc3k_tutorial. The only difference being in how the feature and mitochondrial counts cutoffs were selected in rare variant and common validation analyses. 
+Standard quality control was followed as described in https://satijalab.org/seurat/articles/pbmc3k_tutorial. The only difference being in how the feature and mitochondrial counts cutoffs were selected in rare variant and common validation analyses. Specifically, these thresholds were selected within two median absolute deviations (MADS) surrounding the median. This was down through the R package scuttle (https://rdrr.io/bioc/scuttle/man/isOutlier.html) with the commands below.
 
+	qc.nFeature_RNA  <- isOutlier(data$nFeature_RNA, log=TRUE, type="both",nmads = 2)
+	attr(qc.nFeature_RNA, "thresholds")
+	qc.percent.mt <- isOutlier(data$percent.mt,  type="higher",nmads = 2)
+	attr(qc.percent.m, "thresholds")
+ 
 ----------------------
 **Hypothesis Testing**
 ----------------------
