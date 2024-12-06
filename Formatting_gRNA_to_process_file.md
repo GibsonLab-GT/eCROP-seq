@@ -1,5 +1,5 @@
 (1) Reorder the columns
-	awk '{print $1,'\t',$3,'\t',$2,'\t',$3,'\t',$4}' <filename (i.e. hg19_gRNA_to_process.txt)>
+	awk '{print $1,'\t',$2,'\t',$3,'\t',$4}' <filename (i.e. hg19_gRNA_to_process.txt)>
 
 (2) Sort a column by number of identical occurrences 
 	awk  'NR==FNR{a[$1]++;next} { print a[$1],$0}' <filename>  <filename> |sort -V| sed 's/[0-4]* //'
