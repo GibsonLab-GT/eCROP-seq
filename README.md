@@ -33,9 +33,13 @@ For samples processed with 10x genomics, we then ran cell ranger mkref to create
 
 **Aligning Reads to Supplemented Reference Genome**
 
-With 10x genomics samples, reads were aligned to supplemented reference genome with the following command: cellranger count --id=NAME --fastqs=/path/to/fastqs --transcriptome=/path/to/supplemented/genome --expect-cells=10000.
+With 10x genomics samples, reads were aligned to supplemented reference genome with the following command: 
 
-With Fluent Biosciences samples, reads were aligned to supplemented reference genome with the following command: PIPseeker full --chemistry v4 --fastq /path/to/fastq/. --star-index-path /path/to/gtf --output-path /output/path.
+	cellranger count --id=NAME --fastqs=/path/to/fastqs --transcriptome=/path/to/supplemented/genome --expect-cells=10000.
+
+With Fluent Biosciences samples, reads were aligned to supplemented reference genome with the following command: 
+	
+ 	PIPseeker full --chemistry v4 --fastq /path/to/fastq/. --star-index-path /path/to/gtf --output-path /output/path.
 
 **Quality Control in Seurat**
 
