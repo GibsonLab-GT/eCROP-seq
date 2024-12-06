@@ -19,7 +19,7 @@ Rare variants that were predicted to be functional by Watershed (Ferraro et al. 
 
 **gRNA Design:**
 
-This code has been modified from original work created by author's (Yidan Pan, Ruoyu Tian and Ciaran Lee) in initial eCROP-seq analysis ([DOI: 10.1093/biomethods/bpaa008](https://pubmed.ncbi.nlm.nih.gov/32665975/)). Modifications were made to fit our study design. 
+This code has been modified from original work (https://github.com/pdpdpd/eCROP-kit) created by author's (Yidan Pan, and in collaboration with Ruoyu Tian and Ciaran Lee) in initial eCROP-seq analysis ([DOI: 10.1093/biomethods/bpaa008](https://pubmed.ncbi.nlm.nih.gov/32665975/)). Modifications were made to fit our study design. 
 
 1) gRNA_assessment_hg19.py and gRNA_assessment_hg38.py
 
