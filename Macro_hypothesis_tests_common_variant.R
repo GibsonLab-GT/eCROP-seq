@@ -12,7 +12,6 @@ library(ggplot2)
 library(tidyr)
 
 setwd("path/to/directory")
-filter <- dplyr::filter
 
 POOL_NAME   <- "pool_name"
 POOL_PATH_1 <- "path/to/pool"
