@@ -13,8 +13,6 @@ library(tidyr)
 
 setwd("path/to/directory")
 
-filter <- dplyr::filter
-
 POOL_NAME   <- "pool_XX"
 POOL_PATH_1 <- "path/to/pool"
 POOL_PATH_2 <- NULL
