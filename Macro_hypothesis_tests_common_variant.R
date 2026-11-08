@@ -454,14 +454,36 @@ results_combined <- bind_rows(all_results) %>%
 print(results_combined)
 write.csv(results_combined, paste0(POOL_NAME, "_sceptre_vs_ttest.csv"), row.names = FALSE)
 
-cat("\n=== DISCOVERY SUMMARY (BH < 0.05) ===\n")
-cat(sprintf("SCEPTRE sig: %d\n", sum(results_combined$sceptre_sig_bh, na.rm = TRUE)))
+cat("\n=== DISCOVERY SUMMARY ===\n")
+
+n_all      <- nrow(results_combined)
+n_ttest    <- sum(!is.na(results_combined$ttest_p) & results_combined$ttest_p > 0)
+n_sceptre  <- sum(!is.na(results_combined$sceptre_p))
+
+cat(sprintf("Variants tested: %d\n", n_all))
+cat(sprintf("  usable t-test: %d | usable SCEPTRE: %d\n\n", n_ttest, n_sceptre))
+
+cat("-- Nominal p < 0.05 (criterion reported in the manuscript) --\n")
+cat(sprintf("T-test sig:  %d / %d (%.1f%%)\n",
+            sum(results_combined$ttest_sig_raw, na.rm = TRUE), n_ttest,
+            100 * sum(results_combined$ttest_sig_raw, na.rm = TRUE) / n_ttest))
+cat(sprintf("SCEPTRE sig: %d / %d (%.1f%%)\n",
+            sum(results_combined$sceptre_sig_raw, na.rm = TRUE), n_sceptre,
+            100 * sum(results_combined$sceptre_sig_raw, na.rm = TRUE) / n_sceptre))
+cat(sprintf("Both sig:    %d\n",
+            sum(results_combined$ttest_sig_raw &
+                  results_combined$sceptre_sig_raw, na.rm = TRUE)))
+cat(sprintf("Either sig:  %d\n",
+            sum(results_combined$ttest_sig_raw |
+                  results_combined$sceptre_sig_raw, na.rm = TRUE)))
+
+cat("\n-- BH < 0.05 (reference only) --\n")
 cat(sprintf("T-test sig:  %d\n", sum(results_combined$ttest_sig_bh,   na.rm = TRUE)))
+cat(sprintf("SCEPTRE sig: %d\n", sum(results_combined$sceptre_sig_bh, na.rm = TRUE)))
 cat(sprintf("Both sig:    %d\n",
             sum(results_combined$sceptre_sig_bh &
-                  results_combined$ttest_sig_bh,   na.rm = TRUE)))
-cat(sprintf("\nSECPTRE NA rate: %.1f%% (%d / %d)\n",
-            100 * mean(is.na(results_combined$sceptre_p)),
-            sum(is.na(results_combined$sceptre_p)),
-            nrow(results_combined)))
+                  results_combined$ttest_sig_bh, na.rm = TRUE)))
 
+cat(sprintf("\nSCEPTRE NA rate: %.1f%% (%d / %d)\n",
+            100 * mean(is.na(results_combined$sceptre_p)),
+            sum(is.na(results_combined$sceptre_p)), n_all))
