@@ -45,51 +45,124 @@ With Fluent Biosciences samples, reads were aligned to supplemented reference ge
 	
  	PIPseeker full --chemistry v4 --fastq /path/to/fastq/. --star-index-path /path/to/gtf --output-path /output/path.
 
+
+**gRNA Naming**
+
+The hypothesis-testing scripts identify gRNA features by name, so the supplemented reference must follow these conventions:
+
+Common variant gRNA: <rs.ID>-gene
+Rare variant gRNA 1: <rs.ID>-1-gene
+Rare variant gRNA 2: <rs.ID>-2-gene
+Non-targeting controls name matching: non-targeting, non-targeting-control, non-targeting-ctrl or no-control
+Previously validated controls: rs2251039-ctrl (CISD1), rs35675666-ctrl (PARK7)
+Survival positive controls name matchin:  positive-ctrl (RUNX1, TUBB)
+
+
 **Quality Control in Seurat**
 
-Standard quality control was followed as described in https://satijalab.org/seurat/articles/pbmc3k_tutorial. Feature and mitochondrial counts cutoffsfor all pools were selected within 2.5 median absolute deviations (MADS) surrounding the median for feature counr and 35% mito count. This was down through the R package scuttle (https://rdrr.io/bioc/scuttle/man/isOutlier.html) with the commands below.
+Applied identically by every hypothesis-testing script, in this order:
 
-	qc_per_sample <- function(seurat_obj, sample_id, nmads = 2.5) {
-	  cells <- colnames(seurat_obj)[seurat_obj$Sample == sample_id]
-	  obj   <- seurat_obj[, cells]
-	  qc_lo <- isOutlier(obj$nFeature_RNA, log = TRUE, type = "lower",  nmads = nmads)
-	  qc_hi <- isOutlier(obj$nFeature_RNA, log = TRUE, type = "higher", nmads = nmads)
-	  message(sprintf("Sample %s: nFeature > %.1f, < %.1f | MT: covariate only",
-	                  sample_id,
-	                  attr(qc_lo, "thresholds")["lower"],
-	                  attr(qc_hi, "thresholds")["higher"]))
-	  cells[obj$nFeature_RNA > attr(qc_lo, "thresholds")["lower"] &
-	          obj$nFeature_RNA < attr(qc_hi, "thresholds")["higher"]]
-	}
+1. Object creation: CreateSeuratObject(min.cells = 6, min.features = 200). Pools split across multiple sequencing reactions are merged, one Sample label per reaction.
+2. Doublet and high-mitochondrial removal: scDblFinder is run per Sample on cells with percent.mt < 35. Cells above that threshold are therefore absent from the doublet calls and are flagged is_doublet = TRUE, so the single step removes both predicted doublets and cells with > 35% mitochondrial transcripts.
+3. nFeature outliers: per Sample, cells outside ±2.5 median absolute deviations of the median nFeature_RNA are removed, on the log scale, using scuttle::isOutlier. No further mitochondrial filter is applied; percent.mt is retained as a SCEPTRE covariate.
+4. gRNA requirement: cells are retained only if they carry at least one non-positive-control gRNA. Cells carrying a survival positive-control gRNA (RUNX1, TUBB) are removed.
+5. Normalization:LogNormalize, scale factor 10,000, followed by FindVariableFeatures (vst, 2,000 features) and ScaleData. All t-tests and KS tests are computed on the log-normalized layer; SCEPTRE receives the raw count matrix.
+   
+Example code:
 
- 
+		qc_per_sample <- function(seurat_obj, sample_id, nmads = 2.5) {
+		  cells <- colnames(seurat_obj)[seurat_obj$Sample == sample_id]
+		  obj   <- seurat_obj[, cells]
+		
+		  qc_lo <- isOutlier(obj$nFeature_RNA, log = TRUE, type = "lower", nmads = nmads)
+		
+		  qc_hi <- isOutlier(obj$nFeature_RNA, log = TRUE, type = "higher", nmads = nmads)
+		
+		  message(
+		    sprintf(
+		      "Sample %s: nFeature > %.1f, < %.1f",
+		      sample_id,
+		      attr(qc_lo, "thresholds")["lower"],
+		      attr(qc_hi, "thresholds")["higher"]
+		    )
+		  )
+		
+		  cells[
+		    obj$nFeature_RNA > attr(qc_lo, "thresholds")["lower"] &
+		    obj$nFeature_RNA < attr(qc_hi, "thresholds")["higher"]
+		  ]
+		}
+
+
+**Cell Type Selection**
+
+After normalization, the macrophage and neutrophil scripts retain cells expressing either marker at or above the pool mean:
+
+-Macrophage: CD14 or CD68
+-Neutrophil: CSF3R or S100A8
+
+The initial and undifferentiated scripts apply no such filter.
+
 ----------------------
 **Hypothesis Testing**
 ----------------------
 
 **Hypothesis Testing Common Variant:**
 
-2) Initial_hypothesis_tests_common_variant.R
-3) Undif_hypothesis_tests_common_variant.R
-4) Macro_hypothesis_tests_common_variant.R
-5) Neutro_hypothesis_tests_common_variant.R
+*Scripts:**
+- Initial_hypothesis_tests_common_variant.R - initial screen 
+- Undif_hypothesis_tests_common_variant.R - undifferentiated retest
+- Macro_hypothesis_tests_common_variant.R - macrophage retest
+- Neutro_hypothesis_tests_common_variant.R - neutrophil retest
 
-These scripts take in a path to barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz for a scRNAseq aligned pool. This script also takes in a SNP list with two important columns: Gene, rs.ID 
+*Inputs:**
+- For each aligned scRNA-seq pool:
+- barcodes.tsv.gz
+- features.tsv.gz
+- matrix.mtx.gz
+
+Variant annotation file (snp_list.csv) containing:
+- Gene
+- rs.ID
+
+*Comparison:**
+For each variant-gene pair, cells carrying the focal gRNA are compared with a control group of all remaining cells except those carrying any other gRNA targeting the same gene. 
+
 
 **Hypothesis Testing Rare Variant:**
 
 4) Rare_variant_hypothesis_tests.R
-This script is slightly modified from above due to rare variants being targeted by two gRNA, named SNP_1 for cells with gRNA 1 and SNP_2 for cells with gRNA 2. This script takes in a SNP list with columns: rs.ID,grna_target,Gene,grna_number as well as a path to barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz for a scRNAseq aligned pool. Note this script performs 3 different groupings for hypothesis tests:
 
-  A) cells with gRNA 1 to those without gRNA 1 or gRNA
-  
-  B) cells with gRNA 2 to those without gRNA 2 or gRNA2
-  
-  C) cells with either gRNA 1 or 2 to those without either 
-  
-Tests performed by this script include a Welch’s t-test, KS test, and SCEPTRE. As well as all of those comparisons for only cells expressing target gene and repeats. SCEPTRE and Welch results were the results reported in the manuscript. 
+Because rare variants were targeted by two independent gRNAs, cells are classified as:
+- SNP_1: cells containing gRNA 1
+- SNP_2: cells containing gRNA 2
 
+*Inputs for each aligned scRNA-seq pool:**
+- barcodes.tsv.gz
+- features.tsv.gz
+- matrix.mtx.gz
 
+Variant annotation file (snp_list.csv) containing:
+- rs.ID
+- grna_target
+- Gene
+- grna_number
 
+*Comparison:** 
+Treatment cells: 
+A. gRNA 1 (cells carrying gRNA 1)
+B. gRNA 2 (cells carrying gRNA 2)
+C. Union (cells carrying gRNA 1 or gRNA 2)
+D. Intersection (cells carrying gRNA 1 and gRNA 2)
 
+In all four, the control group is every remaining cell except those carrying any gRNA targeting the focal gene, so the same control pool is used throughout. Control variants carry a single gRNA, so only one of A and B is populated for them and C and D are empty.
+
+**Statistical Tests:**
+The following analyses are performed for each comparison:
+
+- Welch's t-test
+- Kolmogorov-Smirnov (KS) test
+- SCEPTRE with log_nUMI, percent_mt and sequencing batch as covariates
+
+The Welch's t-test and SCEPTRE results at nominal p < 0.05 are those reported in the manuscript. Benjamini-Hochberg adjusted values are included in the output for reference.
 
